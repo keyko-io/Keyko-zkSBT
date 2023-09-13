@@ -36,8 +36,6 @@ contract KeykoZKPSBT {
         addressToId[_to] = tokenId;
         return tokenId;
 
-
-
     }
 
     function getHashData(uint256 tokenId) external view returns (bytes memory) {
@@ -59,10 +57,10 @@ contract KeykoZKPSBT {
         )
     {
         return (
-            idToSBTData[tokenId].encryptedIssuanceDate,
-            idToSBTData[tokenId].encryptedExpiryeDate,
             idToSBTData[tokenId].encryptedOwnerName,
             idToSBTData[tokenId].encryptedLicenseNumber,
+            idToSBTData[tokenId].encryptedIssuanceDate,
+            idToSBTData[tokenId].encryptedExpiryeDate,
             idToSBTData[tokenId].encryptedLicenseType
         );
     }

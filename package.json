@@ -26,7 +26,8 @@
     "solhint": "solhint contracts/**/*.sol"
   },
   "dependencies": {
-    "ethers": "~5.7.2"
+    "ethers": "~5.7.2",
+    "secp256k1": "^5.0.0"
   },
   "devDependencies": {
     "@masa-finance/masa-contracts-identity": "^1.9.1",
