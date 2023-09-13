@@ -74,7 +74,7 @@ function getApproved(uint256 tokenId) external view returns (address)
 ### getEncryptedData
 
 ```solidity
-function getEncryptedData(uint256 tokenId) external view returns (struct EncryptedData, struct EncryptedData, struct EncryptedData, struct EncryptedData, struct EncryptedData)
+function getEncryptedData(uint256 tokenId) external view returns (struct EncryptedData)
 ```
 
 
@@ -92,10 +92,6 @@ function getEncryptedData(uint256 tokenId) external view returns (struct Encrypt
 | Name | Type | Description |
 |---|---|---|
 | _0 | EncryptedData | undefined |
-| _1 | EncryptedData | undefined |
-| _2 | EncryptedData | undefined |
-| _3 | EncryptedData | undefined |
-| _4 | EncryptedData | undefined |
 
 ### getHashData
 
@@ -212,7 +208,7 @@ function renounceOwnership() external nonpayable
 ### safeMint
 
 ```solidity
-function safeMint(address to, SBTData data) external nonpayable
+function safeMint(address to, bytes hashData, EncryptedData encryptedExpiryDate) external nonpayable
 ```
 
 
@@ -224,7 +220,8 @@ function safeMint(address to, SBTData data) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | to | address | undefined |
-| data | SBTData | undefined |
+| hashData | bytes | undefined |
+| encryptedExpiryDate | EncryptedData | undefined |
 
 ### safeTransferFrom
 

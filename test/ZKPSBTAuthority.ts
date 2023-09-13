@@ -117,6 +117,7 @@ describe("ZKP SBT Authority", () => {
 
   describe("mint", () => {
     it("should mint from owner", async () => {
+      console.log("XXX",encryptedReportDate)
       const mintTx = await zkpSBTAuthority
         .connect(owner)
         .mint(

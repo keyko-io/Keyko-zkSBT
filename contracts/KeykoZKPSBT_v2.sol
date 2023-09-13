@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "./SBTData.sol";
 
 contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
+
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -33,10 +34,18 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
-    function safeMint(address to, SBTData memory data) public onlyOwner {
+    function safeMint(
+        address to,
+        bytes calldata hashData,
+        EncryptedData calldata encryptedExpiryDate
+    ) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-        idToSBTData[tokenId] = data;
+
+        idToSBTData[tokenId] = SBTData({
+            hashData: hashData,
+            encryptedExpiryDate: encryptedExpiryDate
+        });
         _safeMint(to, tokenId);
     }
 
@@ -44,26 +53,22 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
         return idToSBTData[tokenId].hashData;
     }
 
+    //  commenting the other fields for now
     function getEncryptedData(
         uint256 tokenId
     )
         external
         view
         returns (
-            EncryptedData memory,
-            EncryptedData memory,
-            EncryptedData memory,
-            EncryptedData memory,
-            EncryptedData memory
+            EncryptedData memory // EncryptedData memory,
         )
     {
-        return (
-            idToSBTData[tokenId].encryptedOwnerName,
-            idToSBTData[tokenId].encryptedLicenseNumber,
-            idToSBTData[tokenId].encryptedIssuanceDate,
-            idToSBTData[tokenId].encryptedExpiryeDate,
-            idToSBTData[tokenId].encryptedLicenseType
-        );
+        return idToSBTData[tokenId].encryptedExpiryDate;
+        // idToSBTData[tokenId].encryptedOwnerName,
+        // idToSBTData[tokenId].encryptedLicenseNumber,
+        // idToSBTData[tokenId].encryptedIssuanceDate,
+
+        // idToSBTData[tokenId].encryptedLicenseType
     }
 
     // The following functions are overrides required by Solidity.

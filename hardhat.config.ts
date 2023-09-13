@@ -12,6 +12,7 @@ import "@typechain/ethers-v5";
 import "@typechain/hardhat";
 import "@primitivefi/hardhat-dodoc";
 import "hardhat-gas-reporter";
+import "@nomicfoundation/hardhat-chai-matchers";
 import "solidity-coverage";
 import { NetworksUserConfig } from "hardhat/types";
 
