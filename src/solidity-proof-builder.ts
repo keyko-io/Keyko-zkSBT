@@ -3,11 +3,11 @@
 const snarkjs = require("snarkjs");
 const fs = require("fs");
 
-const wc = require("../circuits/creditScoreConstraint_js/witness_calculator");
+const wc = require("../circuits-keykosbt/drivingLicenseConstraint_js/witness_calculator");
 const wasm_path =
-  "circuits/creditScoreConstraint_js/creditScoreConstraint.wasm";
-const zkey_path = "circuits/creditScoreConstraint_0001.zkey";
-const witness_path = "circuits/witness.wtns";
+  "circuits-keykosbt/drivingLicenseConstraint_js/drivingLicenseConstraint.wasm";
+const zkey_path = "circuits-keykosbt/drivingLicenseConstraint_0001.zkey";
+const witness_path = "circuits-keykosbt/witness.wtns";
 
 const generateWitness = async (inputs) => {
   const buffer = fs.readFileSync(wasm_path);

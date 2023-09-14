@@ -1,6 +1,7 @@
 import hre from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { DeployFunction } from "hardhat-deploy/dist/types";
+import { getEnvParams, getPrivateKey } from "../src/EnvParams";
 
 let admin: SignerWithAddress;
 
@@ -16,21 +17,29 @@ const func: DeployFunction = async ({
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  [, admin] = await ethers.getSigners();
+  // [, admin] = await ethers.getSigners();
+  const env = getEnvParams(network.name);
+  // const baseUri = `${env.BASE_URI}`;
 
-  const constructorArguments = [];
+  const constructorArguments = [
+    // env.SBT_NAME,
+    // env.SBT_SYMBOL,
+  ];
 
-  const verifierDeploymentResult = await deploy("Verifier", {
-    from: deployer,
-    args: constructorArguments,
-    log: true
-  });
-
+  const groth16VerifierDeploymentResult = await deploy(
+    "Groth16Verifier",
+    {
+      from: deployer,
+      args: constructorArguments,
+      log: true
+    }
+  );
+// console.log("after deployment", groth16VerifierDeploymentResult)
   // verify contract with etherscan, if its not a local network
   if (network.name !== "hardhat") {
     try {
       await hre.run("verify:verify", {
-        address: verifierDeploymentResult.address,
+        address: groth16VerifierDeploymentResult.address,
         constructorArguments
       });
     } catch (error) {
@@ -42,8 +51,21 @@ const func: DeployFunction = async ({
       }
     }
   }
+
+  if (network.name === "hardhat" || network.name === "goerli") {
+    // const signer = env.ADMIN
+    //   ? new ethers.Wallet(getPrivateKey(network.name), ethers.provider)
+    //   : admin;
+
+    const groth16Verifier = await ethers.getContractAt(
+      "Groth16Verifier",
+      groth16VerifierDeploymentResult.address
+    );
+    console.log("groth16Verifier",groth16Verifier)
+
+  }
 };
 
-func.tags = ["Verifier"];
+func.tags = ["groth16Verifier"];
 func.dependencies = [];
 export default func;

@@ -29,7 +29,7 @@ template drivingLicenseConstraint() {
 
     // check driving license is not expired
     // expiryDate should be bigger than current time in order to return true
-    component greaterEqThan = GreaterEqThan(8); 
+    component greaterEqThan = GreaterEqThan(64); 
     greaterEqThan.in[0] <== expiryDate;
     greaterEqThan.in[1] <== threshold;
 

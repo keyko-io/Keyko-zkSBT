@@ -13,9 +13,10 @@
     "noImplicitAny": false
   },
   "include": [
-    "./typechain",
+    // "./typechain",
     "./src",
-    "./test"
+    "./test",
+    "./scripts"
   ],
   "exclude": [
     "./node_modules/*"

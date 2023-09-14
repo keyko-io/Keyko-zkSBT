@@ -20,6 +20,7 @@
     "coverage": "hardhat coverage",
     "docgen": "hardhat dodoc",
     "deploy": "hardhat deploy",
+    "deploy-ksbt": "npx hardhat run  deploy/KeykoZKPSBT_v2.ts --network goerli",
     "run:node": "hardhat node",
     "test": "hardhat test",
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts'",
