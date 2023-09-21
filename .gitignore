@@ -128,3 +128,4 @@ typechain/
 
 # circom generated files
 *.sym
+data-for-remix.txt

@@ -138,6 +138,24 @@ function isApprovedForAll(address owner, address operator) external view returns
 |---|---|---|
 | _0 | bool | undefined |
 
+### mint
+
+```solidity
+function mint(address to, bytes hashData, EncryptedData encryptedExpiryDate) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| to | address | undefined |
+| hashData | bytes | undefined |
+| encryptedExpiryDate | EncryptedData | undefined |
+
 ### name
 
 ```solidity
@@ -204,24 +222,6 @@ function renounceOwnership() external nonpayable
 
 *Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.*
 
-
-### safeMint
-
-```solidity
-function safeMint(address to, bytes hashData, EncryptedData encryptedExpiryDate) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| to | address | undefined |
-| hashData | bytes | undefined |
-| encryptedExpiryDate | EncryptedData | undefined |
 
 ### safeTransferFrom
 

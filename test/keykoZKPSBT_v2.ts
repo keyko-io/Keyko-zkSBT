@@ -63,7 +63,7 @@ describe("Soulbound Token Test", function () {
 
   it("should mint a soulbound token and test the non-transferrability", async () => {
     //Mint token ID 0 to owner address
-    await keykoZKPSBT_v2.safeMint(
+    await keykoZKPSBT_v2.mint(
       identity.address,
       hashData,
       encryptedExpiryDate
@@ -96,7 +96,7 @@ describe("Soulbound Token Test", function () {
       encryptedExpiryDate
     );
 
-    // // we check that the data is the same
+    // we check that the data is the same
     expect(decryptedExipryDate).to.equal(drivingLicense.expiryDate.toString());
 
     // input of ZKP
@@ -109,6 +109,7 @@ describe("Soulbound Token Test", function () {
 
     // generate ZKP proof
     const proof = await genProof(input);
+    // console.log("proof", proof)
 
     //deploy verifier
     const Groth16Verifier = await ethers.getContractFactory("Groth16Verifier");

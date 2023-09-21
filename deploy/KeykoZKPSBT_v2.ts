@@ -34,7 +34,6 @@ const func: DeployFunction = async ({
       log: true
     }
   );
-console.log("after deployment", keykoZKPSBT_v2DeploymentResult)
   // verify contract with etherscan, if its not a local network
   if (network.name !== "hardhat") {
     try {

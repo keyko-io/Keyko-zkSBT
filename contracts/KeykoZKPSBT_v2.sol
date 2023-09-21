@@ -9,18 +9,23 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "./SBTData.sol";
 
 contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
-
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
 
-    mapping(uint256 => SBTData) private idToSBTData;
+    mapping(uint256 => SBTData) public idToSBTData;
+    mapping(address => uint256) public userToTokenId;
+    mapping(address => bool) private addressHasSbt;
 
     constructor() ERC721("KeykoZKPSBT_v2", "KSBT_v2") {}
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC721, ERC721URIStorage)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 
@@ -34,19 +39,26 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
-    function safeMint(
+     //_safemint changed to _mint, so anyone can get the SBT.
+     //it's just for testing and demoing!!!
+    function mint(
         address to,
         bytes calldata hashData,
         EncryptedData calldata encryptedExpiryDate
-    ) public onlyOwner {
+    ) public {
+        require(!addressHasSbt[to], "address already have SBT");
+    
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-
+    
         idToSBTData[tokenId] = SBTData({
             hashData: hashData,
             encryptedExpiryDate: encryptedExpiryDate
         });
-        _safeMint(to, tokenId);
+        // _safeMint(to, tokenId);
+        _mint(to, tokenId);
+        addressHasSbt[to] = true;
+        userToTokenId[to] = tokenId;
     }
 
     function getHashData(uint256 tokenId) external view returns (bytes memory) {
@@ -54,9 +66,7 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
     }
 
     //  commenting the other fields for now
-    function getEncryptedData(
-        uint256 tokenId
-    )
+    function getEncryptedData(uint256 tokenId)
         external
         view
         returns (
@@ -72,15 +82,25 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
     }
 
     // The following functions are overrides required by Solidity.
-    function _burn(
-        uint256 tokenId
-    ) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId)
+        internal
+        override(ERC721, ERC721URIStorage)
+    {
         super._burn(tokenId);
     }
 
-    function tokenURI(
-        uint256 tokenId
-    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
         return super.tokenURI(tokenId);
+    }
+
+    function tokenIdLookup(address tokenOwner) public view  returns (uint256) {
+        require(addressHasSbt[tokenOwner], "address don't have SBT");
+        return userToTokenId[tokenOwner];
     }
 }

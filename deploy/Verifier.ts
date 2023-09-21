@@ -61,7 +61,6 @@ const func: DeployFunction = async ({
       "Groth16Verifier",
       groth16VerifierDeploymentResult.address
     );
-    console.log("groth16Verifier",groth16Verifier)
 
   }
 };
