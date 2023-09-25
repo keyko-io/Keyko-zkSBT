@@ -3,7 +3,7 @@ import { secp256k1 } from '@noble/curves/secp256k1';
 // Convert a byte array to a hex string
 
 function bytesToHex(bytes: Uint8Array) {
-  const hex = [];
+  const hex :any[]= [];
   for (const byte of bytes) {
     const current = byte < 0 ? byte + 256 : byte;
     hex.push((current >>> 4).toString(16));

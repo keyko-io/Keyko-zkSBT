@@ -46,7 +46,7 @@ describe("Soulbound Token Test", function () {
 
     return await Promise.all(encryptionPromises);
   }
-  const decryptAllData = async (data: any) => {
+  const decryptAllData = async (data: any) : Promise<{label:string, decr:string}[]>=> {
     const decryptionPromises = data.map(async (elem) => {
       const decrpt = {
         label: elem.label,
@@ -124,8 +124,7 @@ describe("Soulbound Token Test", function () {
 
 
     // we decrypt the data with the private key of address1
-    const allDecrypted = await decryptAllData(allEncrypted)
-
+    const allDecrypted : {label:string, decr:string}[]= await decryptAllData(allEncrypted)
     // we check that the data is the same
     allDecrypted.every((elem: { label, decr }) => elem.decr === generatedInput[elem.label])
 
