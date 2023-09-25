@@ -19,13 +19,9 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
 
     constructor() ERC721("KeykoZKPSBT_v2", "KSBT_v2") {}
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(ERC721, ERC721URIStorage)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 
@@ -39,22 +35,33 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
-     //_safemint changed to _mint, so anyone can get the SBT.
-     //it's just for testing and demoing!!!
+    //_safemint changed to _mint, so anyone can get the SBT.
+    //it's just for testing and demoing!!!
     function mint(
         address to,
         bytes calldata hashData,
-        EncryptedData calldata encryptedExpiryDate
+        EncryptedData calldata encryptedName,
+        EncryptedData calldata encryptedSurname,
+        EncryptedData calldata encryptedExpiryDate,
+        EncryptedData calldata encryptedBirthDate,
+        EncryptedData calldata encryptedLicenseNumber,
+        EncryptedData calldata encryptedLicenseType
     ) public {
         // require(!addressHasSbt[to], "address already have SBT");
-    
+
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
-    
+
         idToSBTData[tokenId] = SBTData({
             hashData: hashData,
-            encryptedExpiryDate: encryptedExpiryDate
+            encryptedName: encryptedName,
+            encryptedSurname: encryptedSurname,
+            encryptedExpiryDate: encryptedExpiryDate,
+            encryptedBirthDate: encryptedBirthDate,
+            encryptedLicenseNumber: encryptedLicenseNumber,
+            encryptedLicenseType: encryptedLicenseType
         });
+        
         // _safeMint(to, tokenId);
         _mint(to, tokenId);
         addressHasSbt[to] = true;
@@ -66,7 +73,9 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
     }
 
     //  commenting the other fields for now
-    function getEncryptedData(uint256 tokenId)
+    function getEncryptedData(
+        uint256 tokenId
+    )
         external
         view
         returns (
@@ -82,24 +91,19 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
     }
 
     // The following functions are overrides required by Solidity.
-    function _burn(uint256 tokenId)
-        internal
-        override(ERC721, ERC721URIStorage)
-    {
+    function _burn(
+        uint256 tokenId
+    ) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 
-
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
+    function tokenURI(
+        uint256 tokenId
+    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
 
-    function tokenIdLookup(address tokenOwner) public view  returns (uint256) {
+    function tokenIdLookup(address tokenOwner) public view returns (uint256) {
         require(addressHasSbt[tokenOwner], "address don't have SBT");
         return userToTokenId[tokenOwner];
     }

@@ -14,10 +14,10 @@ struct EncryptedData {
 // TODO add more fields
 struct SBTData {
     bytes hashData; // hash of ownerAddress+creditScore without encryption, used to verify the data
-    // encrypted data with the public key of the owner of the SBT
-    // EncryptedData encryptedIssuanceDate;
+    EncryptedData encryptedName;
+    EncryptedData encryptedSurname;
     EncryptedData encryptedExpiryDate;
-    // EncryptedData encryptedOwnerName;
-    // EncryptedData encryptedLicenseNumber;
-    // EncryptedData encryptedLicenseType;
+    EncryptedData encryptedBirthDate;
+    EncryptedData encryptedLicenseNumber;
+    EncryptedData encryptedLicenseType;
 }

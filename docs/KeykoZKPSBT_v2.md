@@ -115,6 +115,34 @@ function getHashData(uint256 tokenId) external view returns (bytes)
 |---|---|---|
 | _0 | bytes | undefined |
 
+### idToSBTData
+
+```solidity
+function idToSBTData(uint256) external view returns (bytes hashData, struct EncryptedData encryptedName, struct EncryptedData encryptedSurname, struct EncryptedData encryptedExpiryDate, struct EncryptedData encryptedBirthDate, struct EncryptedData encryptedLicenseNumber, struct EncryptedData encryptedLicenseType)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| hashData | bytes | undefined |
+| encryptedName | EncryptedData | undefined |
+| encryptedSurname | EncryptedData | undefined |
+| encryptedExpiryDate | EncryptedData | undefined |
+| encryptedBirthDate | EncryptedData | undefined |
+| encryptedLicenseNumber | EncryptedData | undefined |
+| encryptedLicenseType | EncryptedData | undefined |
+
 ### isApprovedForAll
 
 ```solidity
@@ -141,7 +169,7 @@ function isApprovedForAll(address owner, address operator) external view returns
 ### mint
 
 ```solidity
-function mint(address to, bytes hashData, EncryptedData encryptedExpiryDate) external nonpayable
+function mint(address to, bytes hashData, EncryptedData encryptedName, EncryptedData encryptedSurname, EncryptedData encryptedExpiryDate, EncryptedData encryptedBirthDate, EncryptedData encryptedLicenseNumber, EncryptedData encryptedLicenseType) external nonpayable
 ```
 
 
@@ -154,7 +182,12 @@ function mint(address to, bytes hashData, EncryptedData encryptedExpiryDate) ext
 |---|---|---|
 | to | address | undefined |
 | hashData | bytes | undefined |
+| encryptedName | EncryptedData | undefined |
+| encryptedSurname | EncryptedData | undefined |
 | encryptedExpiryDate | EncryptedData | undefined |
+| encryptedBirthDate | EncryptedData | undefined |
+| encryptedLicenseNumber | EncryptedData | undefined |
+| encryptedLicenseType | EncryptedData | undefined |
 
 ### name
 
@@ -316,6 +349,28 @@ function symbol() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### tokenIdLookup
+
+```solidity
+function tokenIdLookup(address tokenOwner) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| tokenOwner | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### tokenURI
 
 ```solidity
@@ -371,6 +426,28 @@ function transferOwnership(address newOwner) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | newOwner | address | undefined |
+
+### userToTokenId
+
+```solidity
+function userToTokenId(address) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 
 
