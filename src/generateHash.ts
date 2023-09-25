@@ -1,7 +1,7 @@
 import { hash } from "argon2";
 import { createIdentity } from "eth-crypto";
 
-const drivingLicense = {
+export const mockDrivingLicense = {
   name: "Maistrinu",
   surname: "Gianniscorfani",
   birthDate: 631194610,  //1st jan 1990
@@ -11,22 +11,22 @@ const drivingLicense = {
 }
 
 const buildPoseidon = require("circomlibjs").buildPoseidon;
-const generateHash = async () => {
+export const generateInput = async () => {
   const identity = createIdentity()
   const poseidon = await buildPoseidon()
 
-  const nameNum = stringToNumericRepresentation(drivingLicense.name)
-  const surnameNum = stringToNumericRepresentation(drivingLicense.surname)
-  const licenseNumberNum = stringToNumericRepresentation(drivingLicense.licenseNumber)
-  const licenseTypeNum = stringToNumericRepresentation(drivingLicense.licenseType)
+  const nameNum = stringToNumericRepresentation(mockDrivingLicense.name)
+  const surnameNum = stringToNumericRepresentation(mockDrivingLicense.surname)
+  const licenseNumberNum = stringToNumericRepresentation(mockDrivingLicense.licenseNumber)
+  const licenseTypeNum = stringToNumericRepresentation(mockDrivingLicense.licenseType)
 
 
   const poseidonHash = poseidon([
     BigInt(identity.address),
     nameNum,
     surnameNum,
-    BigInt(drivingLicense.birthDate),
-    BigInt(drivingLicense.expiryDate),
+    BigInt(mockDrivingLicense.birthDate),
+    BigInt(mockDrivingLicense.expiryDate),
     licenseNumberNum,
     licenseTypeNum
   ]);
@@ -38,12 +38,55 @@ const generateHash = async () => {
   const input = {
     "hashData": hashData,
     "ownerAddress": identity.address,
-    "now": (Date.now()/1000).toFixed(),
+    "now": (Date.now() / 1000).toFixed(),
     "name": nameNum,
     "surname": surnameNum,
     "birthDate": 631194610,
     "expiryDate": 2051265010,
-    "licenseNumber":licenseNumberNum,
+    "licenseNumber": licenseNumberNum,
+    "licenseType": licenseTypeNum,
+  }
+
+
+  return JSON.stringify(input)
+}
+
+export const generateInputFromidentity = async (identity:{
+    privateKey: string;
+    publicKey: string;
+    address: string;
+}) => {
+  const poseidon = await buildPoseidon()
+
+  const nameNum = stringToNumericRepresentation(mockDrivingLicense.name)
+  const surnameNum = stringToNumericRepresentation(mockDrivingLicense.surname)
+  const licenseNumberNum = stringToNumericRepresentation(mockDrivingLicense.licenseNumber)
+  const licenseTypeNum = stringToNumericRepresentation(mockDrivingLicense.licenseType)
+
+
+  const poseidonHash = poseidon([
+    BigInt(identity.address),
+    nameNum,
+    surnameNum,
+    BigInt(mockDrivingLicense.birthDate),
+    BigInt(mockDrivingLicense.expiryDate),
+    licenseNumberNum,
+    licenseTypeNum
+  ]);
+
+  const suffix = BigInt(poseidon.F.toString(poseidonHash)).toString(16)
+  const prefix = suffix.length % 2 == 0 ? "0x" : "0x0"
+  const hashData = prefix + suffix
+
+  const input = {
+    "hashData": hashData,
+    "ownerAddress": identity.address,
+    "now": (Date.now() / 1000).toFixed(),
+    "name": nameNum,
+    "surname": surnameNum,
+    "birthDate": 631194610,
+    "expiryDate": 2051265010,
+    "licenseNumber": licenseNumberNum,
     "licenseType": licenseTypeNum,
   }
 
@@ -52,7 +95,7 @@ const generateHash = async () => {
 }
 
 
-function stringToNumericRepresentation(inputString) {
+export const stringToNumericRepresentation = (inputString)=> {
   return [...inputString].map(char => char.charCodeAt(0)).toString().replace(/,/g, "",)
 }
 
@@ -61,4 +104,4 @@ function stringToNumericRepresentation(inputString) {
 
 // console.log(numericRepresentation);
 
-generateHash().then(h => console.log("hash", h)).catch(console.error)
+// generateInput().then(h => console.log("hash", h)).catch(console.error)

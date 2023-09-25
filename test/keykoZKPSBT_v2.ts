@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { ethers, network } from 'hardhat';
 // import { Contract, Signer, Wallet } from 'ethers';
 import { createIdentity } from 'eth-crypto';
+import { generateInput, generateInputFromidentity, mockDrivingLicense } from "../src/generateHash";
 
 const buildPoseidon = require("circomlibjs").buildPoseidon;
 const {
@@ -14,13 +15,7 @@ const { genProof } = require("../src/solidity-proof-builder");
 
 
 describe("Soulbound Token Test", function () {
-  const drivingLicense = {
-    // ownerName: "fabrizio",
-    // licenseNumber: "123asdq",
-    // issuanceDate: "1410511765", // 12/9/2014
-    expiryDate: 2388999052, // 12/9/2035 --> not working with timestamps
-    // licenseType: "A2"
-  }
+  const drivingLicense = mockDrivingLicense
   let owner: any
   let keykoZKPSBT_v2: any
   let SBTGuy: any
@@ -29,11 +24,43 @@ describe("Soulbound Token Test", function () {
     publicKey: string;
     address: string;
   }
-  let hashData
+  let generatedHashData
   let encryptedExpiryDate
   let groth16Verifier
+  let generatedInput
+  let allEncrypted
 
 
+  const encryptAllData = async (data: any) => {
+    const encryptionPromises = Object.keys(data).map(async (elem) => {
+      const encrpt = {
+        label: `encrypted${elem.charAt(0).toUpperCase() + elem.slice(1)}`,
+        encr: await encryptWithPublicKey(
+          identity.publicKey,
+          data[elem].toString()
+        )
+      }
+      return encrpt
+    })
+
+
+    return await Promise.all(encryptionPromises);
+  }
+  const decryptAllData = async (data: any) => {
+    const decryptionPromises = data.map(async (elem) => {
+      const decrpt = {
+        label: elem.label,
+        decr: await decryptWithPrivateKey(
+          identity.privateKey,
+          elem.encr
+        )
+      }
+      return decrpt
+    })
+
+
+    return await Promise.all(decryptionPromises);
+  }
 
 
   beforeEach(async function () {
@@ -51,22 +78,28 @@ describe("Soulbound Token Test", function () {
       drivingLicense.expiryDate.toString()
     );
 
-    const poseidon = await buildPoseidon();
-    const poseidonHash = poseidon([
-      BigInt(identity.address),
-      BigInt(drivingLicense.expiryDate),
-    ]);
-    const suffix = BigInt(poseidon.F.toString(poseidonHash)).toString(16)
-    const prefix = suffix.length %2 ==0 ? "0x" : "0x0"
-    hashData = prefix + suffix
+    // generate hash
+    const { hashData, ownerAddress, now,
+      name, surname, birthDate, expiryDate, licenseNumber, licenseType
+    } = JSON.parse(await generateInputFromidentity(identity))
+    generatedHashData = hashData
+    generatedInput = { name, surname, birthDate, expiryDate, licenseNumber, licenseType }
+    allEncrypted = await encryptAllData({ name, surname, birthDate, expiryDate, licenseNumber, licenseType })
   });
+
+
 
   it("should mint a soulbound token and test the non-transferrability", async () => {
     //Mint token ID 0 to owner address
     await keykoZKPSBT_v2.mint(
       identity.address,
-      hashData,
-      encryptedExpiryDate
+      generatedHashData,
+      allEncrypted[0].encr,
+      allEncrypted[1].encr,
+      allEncrypted[2].encr,
+      allEncrypted[3].encr,
+      allEncrypted[4].encr,
+      allEncrypted[5].encr,
     );
 
     // Check that owner address owns the token ID 0
@@ -78,7 +111,7 @@ describe("Soulbound Token Test", function () {
       0 // token id
     )).to.be.reverted;
 
-     await expect(keykoZKPSBT_v2['transferFrom(address,address,uint256)'](
+    await expect(keykoZKPSBT_v2['transferFrom(address,address,uint256)'](
       identity.address,
       await owner.getAddress(),
       0 // token id
@@ -91,20 +124,22 @@ describe("Soulbound Token Test", function () {
 
 
     // we decrypt the data with the private key of address1
-    const decryptedExipryDate = await decryptWithPrivateKey(
-      identity.privateKey,
-      encryptedExpiryDate
-    );
+    const allDecrypted = await decryptAllData(allEncrypted)
 
     // we check that the data is the same
-    expect(decryptedExipryDate).to.equal(drivingLicense.expiryDate.toString());
+    allDecrypted.every((elem: { label, decr }) => elem.decr === generatedInput[elem.label])
 
     // input of ZKP
     const input = {
-      hashData: hashData,
+      hashData: generatedHashData,
       ownerAddress: identity.address,
-      threshold: 1694688653,
-      expiryDate: decryptedExipryDate
+      now: 1694688653,
+      name: allDecrypted[0].decr,
+      surname: allDecrypted[1].decr,
+      birthDate: allDecrypted[2].decr,
+      expiryDate: allDecrypted[3].decr,
+      licenseNumber: allDecrypted[4].decr,
+      licenseType: allDecrypted[5].decr,
     };
 
     // generate ZKP proof
