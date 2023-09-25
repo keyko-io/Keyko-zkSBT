@@ -46,7 +46,7 @@ contract KeykoZKPSBT_v2 is ERC721, ERC721URIStorage, Ownable {
         bytes calldata hashData,
         EncryptedData calldata encryptedExpiryDate
     ) public {
-        require(!addressHasSbt[to], "address already have SBT");
+        // require(!addressHasSbt[to], "address already have SBT");
     
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
