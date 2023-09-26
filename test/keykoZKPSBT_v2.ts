@@ -46,6 +46,7 @@ describe("Soulbound Token Test", function () {
 
     return await Promise.all(encryptionPromises);
   }
+
   const decryptAllData = async (data: any) : Promise<{label:string, decr:string}[]>=> {
     const decryptionPromises = data.map(async (elem) => {
       const decrpt = {
@@ -73,10 +74,6 @@ describe("Soulbound Token Test", function () {
     const KeykoZKPSBT_v2 = await ethers.getContractFactory("KeykoZKPSBT_v2");
     keykoZKPSBT_v2 = await KeykoZKPSBT_v2.deploy();
 
-    encryptedExpiryDate = await encryptWithPublicKey(
-      identity.publicKey,
-      drivingLicense.expiryDate.toString()
-    );
 
     // generate hash
     const { hashData, ownerAddress, now,
@@ -129,10 +126,11 @@ describe("Soulbound Token Test", function () {
     allDecrypted.every((elem: { label, decr }) => elem.decr === generatedInput[elem.label])
 
     // input of ZKP
+    console.log("21 yrs ago...",1695721745 - 21 * 365 * 24 * 60 * 60)
     const input = {
       hashData: generatedHashData,
       ownerAddress: identity.address,
-      now: 1694688653,
+      now: 1695721745,
       name: allDecrypted[0].decr,
       surname: allDecrypted[1].decr,
       birthDate: allDecrypted[2].decr,

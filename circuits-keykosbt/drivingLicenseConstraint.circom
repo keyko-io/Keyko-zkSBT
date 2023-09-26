@@ -53,11 +53,10 @@ template drivingLicenseConstraint() {
 
 
     // check owner is more than 21 years old
-    // birthDate <= now - 21 years --> CS: birthDate + 21 years <= now, 
     component birthLessEqThan = LessEqThan(64);  //should be less tan now
     twentyoneYearsInPast <-- now - 21 * 365 * 24 * 60 * 60; // calculating 21 years in the past
-    birthLessEqThan.in[0] <== birthDate + twentyoneYearsInPast;
-    birthLessEqThan.in[1] <== now;
+    birthLessEqThan.in[0] <== birthDate;
+    birthLessEqThan.in[1] <== twentyoneYearsInPast;
 
 
     birthOutput <-- birthLessEqThan.out;

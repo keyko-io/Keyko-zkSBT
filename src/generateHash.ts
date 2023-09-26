@@ -4,7 +4,7 @@ import { createIdentity } from "eth-crypto";
 export const mockDrivingLicense = {
   name: "Maistrinu",
   surname: "Gianniscorfani",
-  birthDate: 631194610,  //1st jan 1990
+  birthDate: 765020676,  //1st jan 1990
   licenseNumber: "Pa8762wer34",
   licenseType: "A2B",
   expiryDate: 2051265010, // 1st Jan 2035
@@ -41,8 +41,8 @@ export const generateInput = async () => {
     "now": (Date.now() / 1000).toFixed(),
     "name": nameNum,
     "surname": surnameNum,
-    "birthDate": 631194610,
-    "expiryDate": 2051265010,
+    "birthDate": mockDrivingLicense.birthDate,
+    "expiryDate": mockDrivingLicense.expiryDate,
     "licenseNumber": licenseNumberNum,
     "licenseType": licenseTypeNum,
   }
@@ -84,8 +84,8 @@ export const generateInputFromidentity = async (identity:{
     "now": (Date.now() / 1000).toFixed(),
     "name": nameNum,
     "surname": surnameNum,
-    "birthDate": 631194610,
-    "expiryDate": 2051265010,
+    "birthDate": mockDrivingLicense.birthDate,
+    "expiryDate": mockDrivingLicense.expiryDate,
     "licenseNumber": licenseNumberNum,
     "licenseType": licenseTypeNum,
   }
@@ -104,4 +104,4 @@ export const stringToNumericRepresentation = (inputString)=> {
 
 // console.log(numericRepresentation);
 
-// generateInput().then(h => console.log("hash", h)).catch(console.error)
+generateInput().then(h => console.log("hash", h)).catch(console.error)
